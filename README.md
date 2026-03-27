@@ -38,3 +38,76 @@
 3. Click "Generate" → Copy TypeScript config
 
 ### Shorthand Mode
+Generates 1-3 random variants per type with ±20% stat variation.
+
+rocketlauncher
+machinegun, pistol
+shotgun, sniper, laser
+
+## 📋 Output Includes
+
+- **TypeScript Configuration** (`GunCore.ts` ready)
+- **Entity Hierarchy** (matching ZombieGun3000 structure)
+- **Script Dependencies** (all required imports)
+- **Projectile Hit Handler** (`NPCAgent.ts` template)
+- **Deployment Checklist** (step-by-step setup)
+
+## 🛠️ Horizon Worlds Integration
+
+Based on the official weapon system from **Chop 'N Pop: Graveyard Bash**:
+
+- Uses `GunCore.ts` and `GunProjectile.ts` (Local execution mode)
+- Compatible with `ProjectileLauncher` gizmo
+- Supports crosshairs for 2D screens (Web/Mobile)
+- Integrates with `Events.projectileHit` system
+
+### Required Scripts
+
+GunCore.ts          → Attach to weapon reference object
+GunProjectile.ts    → Attach to ProjectileLauncher gizmo
+AnimUtils.ts        → Animation utilities
+Events.ts           → Event system
+HapticFeedback.ts   → Controller haptics
+StageHand.ts        → Stage management
+Throttler.ts        → Rate limiting
+
+
+## 🏗️ Entity Structure
+WeaponName (Reference Object)
+├── GunCore.ts (Script - Local Mode)
+├── HackyGrabCube (Grab points)
+├── WeaponModel (Asset Bundle)
+├── MuzzleFlash (VFX)
+├── ProjectileLauncher (Gizmo)
+│   └── GunProjectile.ts (Script - Local Mode)
+├── AmmoText (Text Gizmo)
+├── WeaponPickup (Sound)
+├── WeaponFire (Sound)
+├── WeaponReload (Sound)
+├── WeaponDryFire (Sound)
+├── WeaponShellDrop (Sound)
+└── WeaponPickup (Sound)
+
+🤝 Contributing
+Fork the repository
+Create your feature branch (git checkout -b feature/AmazingFeature)
+
+Commit your changes (git commit -m 'Add some AmazingFeature')
+
+Push to the branch (git push origin feature/AmazingFeature)
+
+Open a Pull Request
+
+See CONTRIBUTING.md for detailed guidelines.
+
+📄 License
+Distributed under the MIT License. See LICENSE for more information.
+
+🙏 Acknowledgments
+Based on Meta Horizon Worlds documentation
+Chop 'N Pop: Graveyard Bash weapon system reference
+Meta Horizon Worlds creator community
+Made with 💜 for VR creators by nytmaer
+HORIWOWEGE = HORIzon WOrlds WEapon GEnerator
+
+
