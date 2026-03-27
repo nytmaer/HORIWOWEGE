@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HORIWOWEGE - Horizon Worlds Weapon Generator</title>
+    <meta name="description" content="HORIWOWEGE: Generate Meta Horizon Worlds compatible weapon configurations. Create TypeScript configs, entity structures, and deployment guides for VR weapons.">
+    <meta name="author" content="nytmaer">
+    <meta property="og:title" content="HORIWOWEGE - Horizon Worlds Weapon Generator">
+    <meta property="og:description" content="Meta Horizon Worlds Weapon System Generator - Create VR weapon configs instantly">
+    <meta property="og:url" content="https://nytmaer.github.io/HORIWOWEGE/">
+    <meta property="og:type" content="website">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 3em;
+            background: linear-gradient(45deg, #00f2ff, #ff00e4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 900;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .acronym {
+            color: #666;
+            font-size: 0.9em;
+            letter-spacing: 2px;
+        }
+
+        .url-badge {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid #00f2ff;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: #00f2ff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .mode-switcher {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 15px 30px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50px;
+            font-size: 1em;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(45deg, #00f2ff, #ff00e4);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .generator-panel {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .generator-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00f2ff;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00f2ff;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        .shorthand-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(0, 242, 255, 0.3);
+            color: #00f2ff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            border-radius: 15px;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+
+        .shorthand-help {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff00e4;
+        }
+
+        .shorthand-help h3 {
+            color: #ff00e4;
+            margin-bottom: 10px;
+        }
+
+        .shorthand-help code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #00f2ff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(45deg, #00f2ff, #ff00e4);
+            border: none;
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.5);
+        }
+
+        .output-panel {
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(0, 242, 255, 0.2);
+            display: none;
+        }
+
+        .output-panel.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .output-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 4px solid #00f2ff;
+        }
+
+        .output-section h3 {
+            color: #ff00e4;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .copy-btn {
+            float: right;
+            padding: 8px 16px;
+            background: rgba(0, 242, 255, 0.2);
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #00f2ff;
+            color: #000;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(255, 0, 228, 0.2);
+            border: 1px solid #ff00e4;
+            color: #ff00e4;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin: 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            color: #00f2ff;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            color: #ffc107;
+        }
+
+        .entity-list {
+            list-style: none;
+        }
+
+        .entity-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid #00f2ff;
+        }
+
+        .entity-list li:before {
+            content: "▸ ";
+            color: #ff00e4;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer a {
+            color: #00f2ff;
+            text-decoration: none;
+        }
+
+        .footer strong {
+            color: #ff00e4;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; letter-spacing: 2px; }
+            .input-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔫 HORIWOWEGE</h1>
+            <p class="subtitle">Meta Horizon Worlds Compatible Weapon System Generator</p>
+            <p class="acronym">HORIzon WOrlds WEapon GEnerator</p>
+            <div class="url-badge">nytmaer.github.io/HORIWOWEGE/</div>
+        </header>
+
+        <div class="mode-switcher">
+            <button class="mode-btn active" onclick="switchMode('guided')">🎯 Guided Generator</button>
+            <button class="mode-btn" onclick="switchMode('shorthand')">⚡ Shorthand Randomizer</button>
+        </div>
+
+        <!-- Guided Generator Mode -->
+        <div id="guided-mode" class="generator-panel active">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Weapon Name</label>
+                    <input type="text" id="weaponName" placeholder="e.g., PlasmaRifle9000" value="MyWeapon">
+                </div>
+                
+                <div class="input-group">
+                    <label>Weapon Type</label>
+                    <select id="weaponType" onchange="updateDefaults()">
+                        <option value="pistol">Pistol</option>
+                        <option value="revolver">Revolver</option>
+                        <option value="smg">SMG / Machine Pistol</option>
+                        <option value="rifle">Assault Rifle</option>
+                        <option value="sniper">Sniper Rifle</option>
+                        <option value="shotgun">Shotgun</option>
+                        <option value="rocket">Rocket Launcher</option>
+                        <option value="laser">Laser Weapon</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Fire Mode</label>
+                    <select id="fireMode">
+                        <option value="semi">Semi-Automatic</option>
+                        <option value="auto">Full-Automatic</option>
+                        <option value="burst">3-Round Burst</option>
+                        <option value="single">Single Shot (Reload per shot)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Fire Rate (ms between shots)</label>
+                    <input type="number" id="fireRate" value="100" min="50" max="2000">
+                </div>
+
+                <div class="input-group">
+                    <label>Projectile Speed</label>
+                    <input type="number" id="fireSpeed" value="500" min="100" max="2000">
+                </div>
+
+                <div class="input-group">
+                    <label>Ammo Capacity</label>
+                    <input type="number" id="maxAmmo" value="10" min="1" max="100">
+                </div>
+
+                <div class="input-group">
+                    <label>Reload Time (ms)</label>
+                    <input type="number" id="reloadTime" value="200" min="100" max="5000">
+                </div>
+
+                <div class="input-group">
+                    <label>Upward Recoil Velocity</label>
+                    <input type="number" id="upwardsRecoilVel" value="30" min="0" max="100">
+                </div>
+
+                <div class="input-group">
+                    <label>Upward Recoil Acceleration</label>
+                    <input type="number" id="upwardsRecoilAcc" value="350" min="0" max="1000">
+                </div>
+
+                <div class="input-group">
+                    <label>Backward Recoil Velocity</label>
+                    <input type="number" id="backwardsRecoilVel" value="0.5" min="0" max="5" step="0.1">
+                </div>
+
+                <div class="input-group">
+                    <label>Backward Recoil Acceleration</label>
+                    <input type="number" id="backwardsRecoilAcc" value="7" min="0" max="50">
+                </div>
+
+                <div class="input-group">
+                    <label>Damage Per Hit</label>
+                    <input type="number" id="damage" value="25" min="1" max="200">
+                </div>
+            </div>
+
+            <button class="generate-btn" onclick="generateWeapon()">⚙️ Generate Weapon Configuration</button>
+        </div>
+
+        <!-- Shorthand Randomizer Mode -->
+        <div id="shorthand-mode" class="generator-panel">
+            <div class="shorthand-help">
+                <h3>📝 Shorthand Syntax Guide</h3>
+                <p>Type weapon codes separated by commas or new lines. Available presets:</p>
+                <p>
+                    <code>rocketlauncher</code> - High damage, slow fire, explosive<br>
+                    <code>machinegun</code> - Fast fire, high capacity, moderate damage<br>
+                    <code>pistol</code> - Balanced, medium capacity<br>
+                    <code>revolver</code> - High damage, low capacity, slow reload<br>
+                    <code>shotgun</code> - Spread shot, high recoil<br>
+                    <code>sniper</code> - Very high damage, slow fire, accurate<br>
+                    <code>smg</code> - Fast fire, low damage, high capacity<br>
+                    <code>laser</code> - Instant hit, no recoil, energy based
+                </p>
+                <p style="margin-top: 10px; color: #888;">Example: <code>rocketlauncher, machinegun, pistol</code></p>
+            </div>
+
+            <textarea class="shorthand-input" id="shorthandInput" placeholder="Enter weapon types here...&#10;rocketlauncher&#10;machinegun&#10;pistol"></textarea>
+
+            <button class="generate-btn" onclick="generateFromShorthand()">🎲 Generate Random Variations</button>
+        </div>
+
+        <!-- Output Panel -->
+        <div id="outputPanel" class="output-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #00f2ff;">📋 Generated Weapon Output</h2>
+                <button class="copy-btn" onclick="copyAll()">Copy All</button>
+            </div>
+
+            <div id="outputContent"></div>
+        </div>
+
+        <footer class="footer">
+            <p><strong>HORIWOWEGE</strong> — Made for Meta Horizon Worlds creators | 
+            <a href="https://github.com/nytmaer/HORIWOWEGE" target="_blank">View on GitHub</a> | 
+            <a href="https://nytmaer.github.io/HORIWOWEGE/">Refresh</a> |
+            Based on Chop 'N Pop: Graveyard Bash weapon system</p>
+            <p style="margin-top: 10px; font-size: 0.8em; color: #888;">
+                HORIzon WOrlds WEapon GEnerator | © 2024 nytmaer
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Weapon Presets Database
+        const presets = {
+            pistol: {
+                fireRate: 150,
+                fireSpeed: 500,
+                maxAmmo: 12,
+                reloadTime: 800,
+                upwardsRecoilVel: 25,
+                upwardsRecoilAcc: 300,
+                backwardsRecoilVel: 0.3,
+                backwardsRecoilAcc: 5,
+                damage: 25,
+                fireMode: 'semi',
+                description: 'Standard sidearm'
+            },
+            revolver: {
+                fireRate: 400,
+                fireSpeed: 600,
+                maxAmmo: 6,
+                reloadTime: 2000,
+                upwardsRecoilVel: 45,
+                upwardsRecoilAcc: 500,
+                backwardsRecoilVel: 0.8,
+                backwardsRecoilAcc: 12,
+                damage: 60,
+                fireMode: 'semi',
+                description: 'High power, slow reload'
+            },
+            smg: {
+                fireRate: 80,
+                fireSpeed: 550,
+                maxAmmo: 30,
+                reloadTime: 1500,
+                upwardsRecoilVel: 20,
+                upwardsRecoilAcc: 250,
+                backwardsRecoilVel: 0.2,
+                backwardsRecoilAcc: 4,
+                damage: 18,
+                fireMode: 'auto',
+                description: 'Rapid fire, low damage'
+            },
+            rifle: {
+                fireRate: 100,
+                fireSpeed: 800,
+                maxAmmo: 30,
+                reloadTime: 2000,
+                upwardsRecoilVel: 35,
+                upwardsRecoilAcc: 400,
+                backwardsRecoilVel: 0.6,
+                backwardsRecoilAcc: 8,
+                damage: 35,
+                fireMode: 'auto',
+                description: 'Balanced automatic rifle'
+            },
+            sniper: {
+                fireRate: 1000,
+                fireSpeed: 1200,
+                maxAmmo: 5,
+                reloadTime: 3000,
+                upwardsRecoilVel: 60,
+                upwardsRecoilAcc: 800,
+                backwardsRecoilVel: 1.5,
+                backwardsRecoilAcc: 20,
+                damage: 100,
+                fireMode: 'single',
+                description: 'Long range, high damage'
+            },
+            shotgun: {
+                fireRate: 600,
+                fireSpeed: 400,
+                maxAmmo: 8,
+                reloadTime: 2500,
+                upwardsRecoilVel: 50,
+                upwardsRecoilAcc: 600,
+                backwardsRecoilVel: 1.2,
+                backwardsRecoilAcc: 15,
+                damage: 15,
+                fireMode: 'semi',
+                description: 'Spread shot, high recoil',
+                pellets: 8
+            },
+            rocketlauncher: {
+                fireRate: 1500,
+                fireSpeed: 300,
+                maxAmmo: 1,
+                reloadTime: 4000,
+                upwardsRecoilVel: 80,
+                upwardsRecoilAcc: 1000,
+                backwardsRecoilVel: 2.0,
+                backwardsRecoilAcc: 25,
+                damage: 150,
+                fireMode: 'single',
+                description: 'Explosive projectile',
+                explosive: true
+            },
+            laser: {
+                fireRate: 100,
+                fireSpeed: 2000,
+                maxAmmo: 50,
+                reloadTime: 2000,
+                upwardsRecoilVel: 5,
+                upwardsRecoilAcc: 50,
+                backwardsRecoilVel: 0.1,
+                backwardsRecoilAcc: 1,
+                damage: 20,
+                fireMode: 'auto',
+                description: 'Hitscan energy weapon'
+            },
+            machinegun: {
+                fireRate: 60,
+                fireSpeed: 700,
+                maxAmmo: 100,
+                reloadTime: 4000,
+                upwardsRecoilVel: 40,
+                upwardsRecoilAcc: 450,
+                backwardsRecoilVel: 0.7,
+                backwardsRecoilAcc: 10,
+                damage: 22,
+                fireMode: 'auto',
+                description: 'Heavy suppressive fire'
+            }
+        };
+
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.generator-panel').forEach(panel => panel.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(mode + '-mode').classList.add('active');
+            document.getElementById('outputPanel').classList.remove('show');
+        }
+
+        function updateDefaults() {
+            const type = document.getElementById('weaponType').value;
+            const preset = presets[type];
+            
+            document.getElementById('fireRate').value = preset.fireRate;
+            document.getElementById('fireSpeed').value = preset.fireSpeed;
+            document.getElementById('maxAmmo').value = preset.maxAmmo;
+            document.getElementById('reloadTime').value = preset.reloadTime;
+            document.getElementById('upwardsRecoilVel').value = preset.upwardsRecoilVel;
+            document.getElementById('upwardsRecoilAcc').value = preset.upwardsRecoilAcc;
+            document.getElementById('backwardsRecoilVel').value = preset.backwardsRecoilVel;
+            document.getElementById('backwardsRecoilAcc').value = preset.backwardsRecoilAcc;
+            document.getElementById('damage').value = preset.damage;
+            document.getElementById('fireMode').value = preset.fireMode;
+        }
+
+        function generateWeapon() {
+            const config = {
+                name: document.getElementById('weaponName').value || 'MyWeapon',
+                type: document.getElementById('weaponType').value,
+                fireMode: document.getElementById('fireMode').value,
+                fireRate: parseInt(document.getElementById('fireRate').value),
+                fireSpeed: parseInt(document.getElementById('fireSpeed').value),
+                maxAmmo: parseInt(document.getElementById('maxAmmo').value),
+                reloadTime: parseInt(document.getElementById('reloadTime').value),
+                upwardsRecoilVel: parseInt(document.getElementById('upwardsRecoilVel').value),
+                upwardsRecoilAcc: parseInt(document.getElementById('upwardsRecoilAcc').value),
+                backwardsRecoilVel: parseFloat(document.getElementById('backwardsRecoilVel').value),
+                backwardsRecoilAcc: parseInt(document.getElementById('backwardsRecoilAcc').value),
+                damage: parseInt(document.getElementById('damage').value)
+            };
+
+            displayOutput([config]);
+        }
+
+        function generateFromShorthand() {
+            const input = document.getElementById('shorthandInput').value.toLowerCase();
+            const types = input.split(/[,\n]+/).map(t => t.trim()).filter(t => t);
+            
+            const weapons = [];
+            const usedNames = new Set();
+            
+            types.forEach(type => {
+                if (presets[type]) {
+                    // Generate 1-3 variations per type
+                    const variations = Math.floor(Math.random() * 3) + 1;
+                    for (let i = 0; i < variations; i++) {
+                        const base = presets[type];
+                        const variant = createVariant(base, type, i, usedNames);
+                        weapons.push(variant);
+                    }
+                }
+            });
+            
+            displayOutput(weapons);
+        }
+
+        function createVariant(base, type, index, usedNames) {
+            const variants = ['MkII', 'Elite', 'Tactical', 'Heavy', 'Light', 'Pro', 'X', 'Alpha', 'Omega'];
+            const variant = variants[Math.floor(Math.random() * variants.length)];
+            let name = `${type.charAt(0).toUpperCase() + type.slice(1)}${variant}`;
+            
+            if (usedNames.has(name)) {
+                name += `_${index + 1}`;
+            }
+            usedNames.add(name);
+            
+            // Randomize stats ±20%
+            const randomize = (val, isFloat = false) => {
+                const factor = 0.8 + (Math.random() * 0.4);
+                return isFloat ? parseFloat((val * factor).toFixed(1)) : Math.floor(val * factor);
+            };
+            
+            return {
+                name: name,
+                type: type,
+                fireMode: base.fireMode,
+                fireRate: randomize(base.fireRate),
+                fireSpeed: randomize(base.fireSpeed),
+                maxAmmo: randomize(base.maxAmmo),
+                reloadTime: randomize(base.reloadTime),
+                upwardsRecoilVel: randomize(base.upwardsRecoilVel),
+                upwardsRecoilAcc: randomize(base.upwardsRecoilAcc),
+                backwardsRecoilVel: randomize(base.backwardsRecoilVel, true),
+                backwardsRecoilAcc: randomize(base.backwardsRecoilAcc),
+                damage: randomize(base.damage),
+                description: base.description,
+                pellets: base.pellets,
+                explosive: base.explosive
+            };
+        }
+
+        function displayOutput(weapons) {
+            const output = document.getElementById('outputContent');
+            output.innerHTML = '';
+            
+            weapons.forEach((weapon, index) => {
+                const section = document.createElement('div');
+                section.className = 'output-section';
+                section.style.borderLeftColor = index % 2 === 0 ? '#00f2ff' : '#ff00e4';
+                
+                const shouldAutoFire = weapon.fireMode === 'auto';
+                const isSingleShot = weapon.fireMode === 'single';
+                
+                section.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3>${weapon.name} <span class="tag">${weapon.type}</span> <span class="tag">${weapon.fireMode}</span></h3>
+                        <button class="copy-btn" onclick="copySection(this)">Copy</button>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value">${weapon.damage}</div>
+                            <div class="stat-label">Damage</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${weapon.maxAmmo}</div>
+                            <div class="stat-label">Ammo</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${weapon.fireRate}</div>
+                            <div class="stat-label">Fire Rate</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${weapon.reloadTime}ms</div>
+                            <div class="stat-label">Reload</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 20px; color: #00f2ff;">TypeScript Configuration (GunCore.ts)</h3>
+                    <pre>const ${weapon.name}Config = {
+  fireRate: ${weapon.fireRate},
+  fireSpeed: ${weapon.fireSpeed},
+  maxAmmo: ${weapon.maxAmmo},
+  shouldAutoFire: ${shouldAutoFire},
+  reloadTime: ${weapon.reloadTime},
+  upwardsRecoilVel: ${weapon.upwardsRecoilVel},
+  upwardsRecoilAcc: ${weapon.upwardsRecoilAcc},
+  backwardsRecoilVel: ${weapon.backwardsRecoilVel},
+  backwardsRecoilAcc: ${weapon.backwardsRecoilAcc},
+};</pre>
+
+                    <h3 style="margin-top: 20px; color: #00f2ff;">Entity Structure</h3>
+                    <ul class="entity-list">
+                        <li><strong>${weapon.name}</strong> (Reference Object)</li>
+                        <li>├─ GunCore.ts (Script - Local Mode)</li>
+                        <li>├─ HackyGrabCube (Grab Points)</li>
+                        <li>├─ ${weapon.name}Model (Asset Bundle)</li>
+                        <li>├─ MuzzleFlash (VFX)</li>
+                        <li>├─ ProjectileLauncher (Gizmo - Set Owner to Player)</li>
+                        <li>│  └─ GunProjectile.ts (Script - Local Mode)</li>
+                        <li>├─ AmmoText (Text Gizmo)</li>
+                        <li>├─ WeaponPickup (Sound)</li>
+                        <li>├─ ${weapon.name}Fire (Sound)</li>
+                        <li>├─ ${weapon.name}Reload (Sound)</li>
+                        <li>├─ ${weapon.name}DryFire (Sound)</li>
+                        <li>├─ ${weapon.name}ShellDrop (Sound)</li>
+                        <li>└─ ${weapon.name}Pickup (Sound)</li>
+                    </ul>
+
+                    <h3 style="margin-top: 20px; color: #00f2ff;">Required Scripts</h3>
+                    <pre>// Attach to ${weapon.name} Reference Object:
+import { GunCore } from './GunCore';
+import { AnimUtils } from './AnimUtils';
+import { Behaviour } from './Behaviour';
+import { Events } from './Events';
+import { HapticFeedback } from './HapticFeedback';
+import { StageHand } from './StageHand';
+
+// Attach to ProjectileLauncher:
+import { GunProjectile } from './GunProjectile';
+import { Throttler } from './Throttler';</pre>
+
+                    <h3 style="margin-top: 20px; color: #00f2ff;">Projectile Hit Handler (NPCAgent.ts)</h3>
+                    <pre>// In your NPCAgent.ts or target script:
+import { Events } from './Events';
+
+// Subscribe to projectile hit
+this.subscribe(Events.projectileHit, (data) => {
+  const damage = ${weapon.damage};
+  
+  ${weapon.explosive ? `
+  // Explosive damage (Rocket Launcher)
+  const splashRadius = 5;
+  const entities = this.getEntitiesInRadius(data.hitPoint, splashRadius);
+  entities.forEach(entity => {
+    entity.takeDamage(damage * (1 - distance / splashRadius));
+  });` : weapon.pellets ? `
+  // Shotgun spread damage
+  const pellets = ${weapon.pellets};
+  const totalDamage = damage * pellets; // Divided among hits` : `
+  // Standard bullet damage
+  this.health -= damage;`}
+  
+  // Play hit effects
+  this.playHitReaction();
+});</pre>
+
+                    ${weapon.explosive ? `
+                    <div class="warning">
+                        <strong>⚠️ Explosive Weapon:</strong> Modify GunProjectile.ts to add explosion radius check and area damage logic.
+                    </div>` : ''}
+                    
+                    ${weapon.pellets ? `
+                    <div class="warning">
+                        <strong>⚠️ Shotgun:</strong> Modify ProjectileLauncher to fire ${weapon.pellets} projectiles in spread pattern, or use single projectile with pellet count logic.
+                    </div>` : ''}
+
+                    <h3 style="margin-top: 20px; color: #00f2ff;">Deployment Checklist</h3>
+                    <pre>□ Save ${weapon.name} as Asset Template
+□ Copy GunCore.ts and GunProjectile.ts to your project
+□ Set both scripts to Local execution mode
+□ Set Player as owner of ProjectileLauncher entity
+□ Create Events.projectileHit handler in target scripts
+□ Configure crosshairs for 2D screens (Web/Mobile)
+□ Test grab points with HackyGrabCube
+□ Balance audio levels for all sound effects</pre>
+                `;
+                
+                output.appendChild(section);
+            });
+            
+            document.getElementById('outputPanel').classList.add('show');
+        }
+
+        function copySection(btn) {
+            const section = btn.closest('.output-section');
+            const text = section.innerText;
+            navigator.clipboard.writeText(text);
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
+        }
+
+        function copyAll() {
+            const allText = document.getElementById('outputContent').innerText;
+            navigator.clipboard.writeText(allText);
+            alert('All weapon configurations copied to clipboard!');
+        }
+
+        // Initialize with default values
+        updateDefaults();
+    </script>
+</body>
+</html>
