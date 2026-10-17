@@ -1,5 +1,7 @@
 # 🔫 HORIWOWEGE
 
+[![Support on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/nytmaer)
+
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://nytmaer.github.io/HORIWOWEGE/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Meta Horizon Worlds](https://img.shields.io/badge/Meta-Horizon%20Worlds-blue)](https://www.meta.com/horizon-worlds/)
@@ -110,4 +112,6 @@ Meta Horizon Worlds creator community
 Made with 💜 for VR creators by nytmaer
 HORIWOWEGE = HORIzon WOrlds WEapon GEnerator
 
+## Support
 
+If you find this project useful, you can support its development on Ko-fi: **[ko-fi.com/nytmaer](https://ko-fi.com/nytmaer)**
